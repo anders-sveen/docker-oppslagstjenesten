@@ -1,4 +1,4 @@
-FROM ske/java
+FROM skatt/java
 ENV PORT_BASE 8080
 EXPOSE 8080
 ENV VERSION 1.2.1
