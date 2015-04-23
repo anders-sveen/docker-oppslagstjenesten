@@ -1,0 +1,125 @@
+{
+  "apiVersion": "v1beta1",
+  "items": [
+    {
+      "apiVersion": "v1beta1",
+      "containerPort": 8080,
+      "id": "oppslagstjenesten",
+      "kind": "Service",
+      "port": 8080,
+      "selector": {
+        "name": "oppslagstjenesten"
+      }
+    },
+    {
+      "apiVersion": "v1beta1",
+      "kind": "ImageRepository",
+      "metadata": {
+        "name": "oppslagstjenesten"
+      }
+    },
+    {
+      "apiVersion": "v1beta1",
+      "kind": "ImageRepository",
+      "metadata": {
+        "name": "java"
+      },
+      "dockerImageRepository": "skatt/java"
+    },
+    {
+      "apiVersion": "v1beta1",
+      "kind": "BuildConfig",
+      "metadata": {
+        "name": "oppslagstjenesten-build",
+        "labels": {
+          "name": "oppslagstjenesten-build"
+        }
+      },
+      "parameters": {
+        "output": {
+          "to": {
+            "name": "oppslagstjenesten"
+          }
+        },
+        "source": {
+          "git": {
+            "uri": "https://github.com/Skatteetaten/docker-oppslagstjenesten.git"
+          },
+          "type": "Git"
+        },
+        "strategy": {
+          "type": "Docker"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1beta1",
+      "kind": "DeploymentConfig",
+      "metadata": {
+        "name": "oppslagstjenesten"
+      },
+      "template": {
+        "controllerTemplate": {
+          "podTemplate": {
+            "desiredState": {
+              "manifest": {
+                "containers": [
+                  {
+                    "env": [
+                      {
+                        "name": "PORT_BASE",
+                        "value": "${PORT_BASE}"
+                      }
+                    ],
+                    "image": "oppslagstjenesten",
+                    "name": "oppslagstjenesten",
+                    "ports": [
+                      {
+                        "containerPort": 8080
+                      }
+                    ]
+                  }
+                ],
+                "version": "v1beta1"
+              }
+            },
+            "labels": {
+              "name": "oppslagstjenesten"
+            }
+          },
+          "replicaSelector": {
+            "name": "oppslagstjenesten"
+          },
+          "replicas": 1
+        },
+        "strategy": {
+          "type": "Recreate"
+        }
+      }
+    }
+  ],
+  "kind": "Template",
+  "metadata": {
+    "annotations": {
+      "description": "This example shows how to create a simple java application in openshift origin v3"
+    },
+    "name": "oppslagstjenesten"
+  },
+  "parameters": [
+    {
+      "description": "administrator username",
+      "from": "admin[A-Z0-9]{3}",
+      "generate": "expression",
+      "name": "ADMIN_USERNAME"
+    },
+    {
+      "description": "administrator password",
+      "from": "[a-zA-Z0-9]{8}",
+      "generate": "expression",
+      "name": "ADMIN_PASSWORD"
+    }
+  ],
+  "labels": {
+    "template": "application-template-dockerbuild"
+  }
+}
