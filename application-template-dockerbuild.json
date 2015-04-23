@@ -24,7 +24,7 @@
       "metadata": {
         "name": "java"
       },
-      "dockerImageRepository": "skatt/java"
+      "dockerImageRepository": "java"
     },
     {
       "apiVersion": "v1beta1",
@@ -51,6 +51,20 @@
           "type": "Docker"
         }
       }
+
+      "triggers": [
+        {
+          "imageChange": {
+            "from": {
+              "name": "java"
+            },
+            "image": "java",
+            "tag": "latest"
+          },
+          "type": "imageChange"
+        }
+      ]
+
     },
     {
       "apiVersion": "v1beta1",
@@ -95,7 +109,22 @@
         "strategy": {
           "type": "Recreate"
         }
-      }
+      },
+      "triggers": [
+        {
+          "imageChangeParams": {
+            "automatic": true,
+            "containerNames": [
+              "oppslagstjenesten"
+            ],
+            "from": {
+              "name": "oppslagstjenesten"
+            },
+            "tag": "latest"
+          },
+          "type": "ImageChange"
+        }
+      ]
     }
   ],
   "kind": "Template",
@@ -107,16 +136,9 @@
   },
   "parameters": [
     {
-      "description": "administrator username",
-      "from": "admin[A-Z0-9]{3}",
-      "generate": "expression",
-      "name": "ADMIN_USERNAME"
-    },
-    {
-      "description": "administrator password",
-      "from": "[a-zA-Z0-9]{8}",
-      "generate": "expression",
-      "name": "ADMIN_PASSWORD"
+      "description": "Listening port for oppslagstjenesten",
+      "name": "PORT_BASE",
+      "value": "8080"
     }
   ],
   "labels": {
