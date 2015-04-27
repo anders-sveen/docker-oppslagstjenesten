@@ -36,14 +36,6 @@
     },
     {
       "apiVersion": "v1beta1",
-      "kind": "ImageRepository",
-      "metadata": {
-        "name": "java"
-      },
-      "dockerImageRepository": "java"
-    },
-    {
-      "apiVersion": "v1beta1",
       "kind": "BuildConfig",
       "metadata": {
         "name": "oppslagstjenesten-build",
